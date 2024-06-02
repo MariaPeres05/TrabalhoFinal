@@ -11,12 +11,18 @@ typedef struct {
 } Requisitante;
 
 
-// Function prototypes
+
 void AddRequisitante(Requisitante requisitante);
 void ListarRequisitantes();
-void BuscarRequisitantePorNome(const char *nome);
+void ListarRequisitantePorNome(const char *nome);
 int ValidarIDRequisitante(const char id[]);
 int ValidarData(const char *data);
 int ValidarIDFreguesia(const char id[]);
+void DeterminarIdadeMaisRequisitantes();
+void ContarPessoasIdadeSuperior(int idadeMinima);
+void DeterminarMediaIdades();
+void DeterminarIdadeMaxima();
+int calcularIdade(const char *dataNascimento);
+void DeterminarSobrenomeMaisUsado();
 
 #endif // REQUISITANTE_H

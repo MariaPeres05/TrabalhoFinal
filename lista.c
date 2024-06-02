@@ -1,6 +1,11 @@
 #include "lista.h"
 #include <stdlib.h>
 
+No *Requisicoes = NULL;
+No *Livros = NULL;
+No *Requisitantes = NULL;
+
+
 No* CriarNo(void *dados) {
     No *novoNo = (No *)malloc(sizeof(No));
     if (!novoNo) return NULL;

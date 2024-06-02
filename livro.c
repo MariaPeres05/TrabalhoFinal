@@ -5,9 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "texto.h"
+#include "requisicao.h"
 
- No *Livros;
- Entrada *Livro_hash_table[HASH_TABLE_SIZE];
 
 typedef struct NoArea {
     char area[50];
@@ -21,6 +20,7 @@ void AddLivro(Livro livro) {
     if (!novoLivro) return;
     *novoLivro = livro;
     AddNo(&Livros, novoLivro);
+    //printf("Livro isbn: [%s]", livro.isbn);
     InserirEntrada(Livro_hash_table, livro.isbn, novoLivro);
 }
 
@@ -63,19 +63,17 @@ void ListarLivrosPorArea() {
     // Exibir os livros agrupados por área
     NoArea *noArea = areas;
     while (noArea) {
-        printf("Área: %s\n", noArea->area);
+        printf("Area: %s\n", noArea->area);
         No *livroNo = noArea->livros;
         while (livroNo) {
             Livro *livro = (Livro *)livroNo->dados;
-            printf("  ISBN: %s, Título: %s, Autor: %s, Ano: %d\n",
+            printf("  ISBN: %s, Titulo: %s, Autor: %s, Ano: %d\n",
                    livro->isbn, livro->titulo, livro->autor, livro->ano);
             livroNo = livroNo->prox;
         }
         noArea = noArea->prox;
         printf("\n");
     }
-    // Salvar os livros no ficheiro após listar
-    SalvarLivros("livros.txt");
 
     // Liberar a memória alocada para os nós de área
     while (areas) {
@@ -92,8 +90,8 @@ void ListarLivrosPorArea() {
     }
 }
 
-void BuscarLivroPorISBN(const char *isbn) {
-    Livro *livro = (Livro *)BuscarValor(Livro_hash_table, isbn);
+Livro* BuscarLivroPorISBN(const char *isbn) {
+    Livro *livro = (Livro *)ObterValor(Livro_hash_table, isbn);
     if (livro) {
         printf("Encontrar Livro:\n ISBN: %s, titulo: %s, autor: %s, Area: %s, ano: %d\n",
                livro->isbn, livro->titulo, livro->autor, livro->area, livro->ano);
@@ -103,5 +101,45 @@ void BuscarLivroPorISBN(const char *isbn) {
 }
 
 void DevolverLivro(const char *isbn, const char *id_requisitante) {
-    
+    No **atual = &Requisicoes;
+    while (*atual) {
+        Requisicao *req = (Requisicao *)(*atual)->dados;
+        if (strcmp(req->isbn, isbn) == 0 && strcmp(req->id_requisitante, id_requisitante) == 0) {
+            No *temp = *atual;
+            *atual = (*atual)->prox;
+            free(temp->dados);
+            free(temp);
+            return;
+        }
+        atual = &(*atual)->prox;
+    }
 }
+
+void ListarLivrosMaisRecentes() {
+    if (!Livros) {
+        printf("Nenhum livro cadastrado.\n");
+        return;
+    }
+    int anoMaisRecente = 0;
+    No *atual = Livros;
+    // Encontrar o ano mais recente
+    while (atual) {
+        Livro *livro = (Livro *)atual->dados;
+        if (livro->ano > anoMaisRecente) {
+            anoMaisRecente = livro->ano;
+        }
+        atual = atual->prox;
+    }
+    // Listar todos os livros que foram publicados no ano mais recente
+    printf("Livros mais recentes (ano %d):\n", anoMaisRecente);
+    atual = Livros;
+    while (atual) {
+        Livro *livro = (Livro *)atual->dados;
+        if (livro->ano == anoMaisRecente) {
+            printf("ISBN: %s, Título: %s, Autor: %s, Área: %s, Ano: %d\n",
+                   livro->isbn, livro->titulo, livro->autor, livro->area, livro->ano);
+        }
+        atual = atual->prox;
+    }
+}
+

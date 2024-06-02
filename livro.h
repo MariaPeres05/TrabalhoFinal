@@ -2,7 +2,7 @@
 #define Livro_H
 
 typedef struct {
-    char isbn[14];
+    char isbn[50];
     char titulo[100];
     char autor[50];
     char area[30];
@@ -13,7 +13,8 @@ typedef struct {
 // Function prototypes
 void AddLivro(Livro Livro);
 void ListarLivrosPorArea();
-void BuscarLivroPorISBN(const char *isbn);
+Livro* BuscarLivroPorISBN(const char *isbn);
 void DevolverLivro(const char *isbn, const char *id_requisitante);
+void ListarLivrosMaisRecentes();
 
 #endif // Livro_H

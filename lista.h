@@ -1,15 +1,19 @@
 #ifndef LISTA_H
 #define LISTA_H
 
-// No structure for linked lists
+
 typedef struct No {
     void *dados;
     struct No *prox;
 } No;
 
-// Function prototypes
-No* CriarNo(void *data);
-void AddNo(No **head, void *data);
+
+No* CriarNo(void *dados);
+void AddNo(No **head, void *dados);
 void DestruirLista(No *head, void (*LiberarDados)(void *));
+
+extern No *Requisitantes;
+extern No *Livros;
+extern No *Requisicoes;
 
 #endif // LISTA_H

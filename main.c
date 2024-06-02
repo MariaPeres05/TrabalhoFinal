@@ -9,11 +9,6 @@
 #include "hashing.h"
 //#include "utils.h"
 
-No *Livros = NULL;
-Entrada *Livro_hash_table[HASH_TABLE_SIZE] = {0};
-No *requisitantes = NULL ;
-Entrada *requisitante_hash_table[HASH_TABLE_SIZE] = {0};
-
 void menuPrincipal() {
     printf("\nBem vindo à Biblioteca ESTGV!\n");
     printf("1. Carregar Dados\n");
@@ -26,6 +21,14 @@ void menuPrincipal() {
     printf("8. Requisitar livro\n");
     printf("9. Devolver Livro\n");
     printf("10. Listar atuais requisicoes\n");
+    printf("11. Determinar a idade máxima de todos os requisitantes\n");
+    printf("12. Determinar a média das idades de todos os requisitantes\n");
+    printf("11. Determinar a idade máxima de todos os requisitantes\n");
+    printf("12. Determinar a média das idades de todos os requisitantes\n");
+    printf("13. Contar pessoas com idade superior a um dado valor\n");
+    printf("14. Determinar a idade com mais requisitantes\n");
+    printf("15. Determinar o sobrenome mais utilizado\n");
+    printf("16. Listar livros mais recentes\n");
     printf("0. Sair\n");
     printf("Insira a sua escolha: ");
 }
@@ -53,22 +56,23 @@ void AddLivroMenu() {
     printf("Inserir ano: ");
     scanf("%d", &livro.ano);
     AddLivro(livro);
-    SalvarLivros("livros.txt");
+    SalvarLivro("livros.txt", livro.isbn);
     printf("Livro adicionado com sucesso.\n");
 }
 
 void BuscarLivroMenu() {
-    char isbn[14];
+    char isbn[50];
     printf("Inserir ISBN: ");
     scanf("%s", isbn);
     BuscarLivroPorISBN(isbn);
 }
 
 void BuscarRequisitanteMenu (){
-    char nome[50];
-    printf("Inserir Nome:");
-    scanf("%[^\n]%*c", nome);
-    BuscarRequisitantePorNome(nome);
+     char nome[50];
+    printf("Inserir Nome: ");
+    fgets(nome, sizeof(nome), stdin);
+    nome[strcspn(nome, "\n")] = '\0'; 
+    ListarRequisitantePorNome(nome);
 }
 
 void AddRequisitanteMenu() {
@@ -108,7 +112,7 @@ void RequisitarLivroMenu() {
 }
 
 void DevolverLivroMenu() {
-    char isbn[14], id_requisitante[10];
+    char isbn[50], id_requisitante[10];
     printf("Inserir Livro ISBN: ");
     scanf("%s", isbn);
     printf("Inserir Requisitante ID: ");
@@ -123,6 +127,7 @@ int main() {
     while (1) {
         menuPrincipal();
         scanf("%d", &op);
+        getchar();
         switch (op) {
             case 1:
                 CarregarDados();
@@ -154,6 +159,28 @@ int main() {
             case 10:
                  ListarAtuaisRequisicoes();
                  break;
+            case 11:
+                DeterminarIdadeMaxima();
+                break;
+            case 12:
+                DeterminarMediaIdades();
+                break;
+            case 13: {
+                int idadeMinima;
+                printf("Insira a idade mínima: ");
+                scanf("%d", &idadeMinima);
+                ContarPessoasIdadeSuperior(idadeMinima);
+                break;
+            }
+            case 14:
+                DeterminarIdadeMaisRequisitantes();
+                break;
+            case 15:
+                DeterminarSobrenomeMaisUsado();
+                break;
+            case 16:
+                ListarLivrosMaisRecentes();
+                break;
             case 0:
                 printf("A sair...\n");
                 exit(0);

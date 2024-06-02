@@ -1,6 +1,12 @@
 #include "hashing.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+
+// Define the hash tables
+Entrada *Livro_hash_table[HASH_TABLE_SIZE] = {NULL};
+Entrada *requisitante_hash_table[HASH_TABLE_SIZE] = {NULL};
+
 
 unsigned int hash(const char *key) {
     unsigned int hash = 0;
@@ -21,6 +27,7 @@ Entrada* CriarEntrada(const char *key, void *valor) {
 
 void InserirEntrada(Entrada **hash_table, const char *key, void *valor) {
     unsigned int indice = hash(key);
+    //printf("indice: %u", indice);
     Entrada *novaEntrada = CriarEntrada(key, valor);
     if (!novaEntrada) return;
     if (!hash_table[indice]) {
@@ -34,8 +41,10 @@ void InserirEntrada(Entrada **hash_table, const char *key, void *valor) {
     }
 }
 
-void* BuscarValor(Entrada **hash_table, const char *key) {
+void* ObterValor(Entrada **hash_table, const char *key) {
+   //  printf("Key/ISBN: %s", key);
     unsigned int indice = hash(key);
+   // printf("indice no metodo obterValor: %u", indice);
     Entrada *atual = hash_table[indice];
     while (atual) {
         if (strcmp(atual->key, key) == 0) {
@@ -45,6 +54,7 @@ void* BuscarValor(Entrada **hash_table, const char *key) {
     }
     return NULL;
 }
+
 
 void DestruirHashing(Entrada **hash_table) {
     for (int i = 0; i < HASH_TABLE_SIZE; i++) {
